@@ -19,7 +19,9 @@ const DialogContext = React.createContext<{
   setDialogState?: React.Dispatch<React.SetStateAction<DialogState>>;
 }>({});
 
-export function DialogProvider() {
+export function DialogProvider({
+  children
+}: React.PropsWithChildren) {
   const [dialogState, setDialogState] = React.useState<DialogState>({})
 
   return (
@@ -28,6 +30,7 @@ export function DialogProvider() {
       setDialogState,
     }}>
       <DialogContainer />
+      {children}
     </DialogContext.Provider>
   );
 }
