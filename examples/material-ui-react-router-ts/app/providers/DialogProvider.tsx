@@ -5,13 +5,14 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent, { type DialogContentProps } from '@mui/material/DialogContent';
 import DialogContentText, { type DialogContentTextProps } from '@mui/material/DialogContentText';
 import DialogTitle, { type DialogTitleProps } from '@mui/material/DialogTitle';
+import LoadingButton, { type LoadingButtonProps } from '@mui/lab/LoadingButton'
 
 type DialogState = {
   DialogProps?: DialogProps;
   DialogTitleProps?: DialogTitleProps;
   DialogContentProps?: DialogContentProps;
   DialogContentTextProps?: DialogContentTextProps;
-  DialogActions?: ButtonProps[];
+  DialogActions?: LoadingButtonProps[];
 }
 
 const DialogContext = React.createContext<{
@@ -62,7 +63,7 @@ function DialogContainer() {
       </DialogContent>
       <DialogActions>
         {dialogState?.DialogActions?.map((action) => (
-          <Button {...action} onClick={async (event) => {
+          <ActionButton {...action} onClick={async (event) => {
             const result = await action.onClick?.(event)
 
             if(!result) {
@@ -77,4 +78,19 @@ function DialogContainer() {
       </DialogActions>
     </Dialog>
   );
+}
+
+function ActionButton(props: LoadingButtonProps) {
+  const [loading, setLoading] = React.useState(false)
+  return (
+    <LoadingButton {...props} loading={props.loading || loading} onClick={async (event) => {
+      try {
+        setLoading(true)
+        await props.onClick?.(event)
+      }
+      finally {
+        setLoading(false)
+      }
+    }} />
+  )
 }
